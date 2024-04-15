@@ -2,6 +2,8 @@
 
 import { EnvelopeClosedIcon, LockClosedIcon } from "@radix-ui/react-icons";
 import { Button, Flex, Text, TextField } from "@radix-ui/themes";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 
@@ -13,13 +15,26 @@ function SigninForm() {
   } = useForm({
     values: {
       email: "",
-      password: ""
+      password: "",
+    },
+  });
+  const router = useRouter();
+
+  const onSubmit = handleSubmit(async (data) => {
+    console.log(data);
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+    });
+
+    if (!res?.ok) {
+      console.log(res);
     }
+
+    router.push("/dashboard");
   });
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-  });
 
   return (
     <form onSubmit={onSubmit}>
@@ -50,7 +65,11 @@ function SigninForm() {
           }}
         />
 
-        {errors.email && <Text color="ruby" className="text-xs">{errors.email.message}</Text>}
+        {errors.email && (
+          <Text color="ruby" className="text-xs">
+            {errors.email.message}
+          </Text>
+        )}
 
         <label htmlFor="password">Password</label>
         <Controller
@@ -64,7 +83,7 @@ function SigninForm() {
             minLength: {
               message: "Password must be at least 6 characters",
               value: 6,
-            }
+            },
           }}
           render={({ field }) => {
             return (
@@ -77,9 +96,15 @@ function SigninForm() {
           }}
         />
 
-{errors.password && <Text color="ruby" className="text-xs">{errors.password.message}</Text>}
+        {errors.password && (
+          <Text color="ruby" className="text-xs">
+            {errors.password.message}
+          </Text>
+        )}
 
-        <Button type="submit" mt="4">Sign in</Button>
+        <Button type="submit" mt="4">
+          Sign in
+        </Button>
       </Flex>
     </form>
   );
