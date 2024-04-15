@@ -1,11 +1,9 @@
 "use client";
-
+import { Flex, TextField, Button, Text } from "@radix-ui/themes";
 import { EnvelopeClosedIcon, LockClosedIcon } from "@radix-ui/react-icons";
-import { Button, Flex, Text, TextField } from "@radix-ui/themes";
+import { useForm, Controller } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
 
 function SigninForm() {
   const {
@@ -35,6 +33,7 @@ function SigninForm() {
     router.push("/dashboard");
   });
 
+  console.log(errors);
 
   return (
     <form onSubmit={onSubmit}>
@@ -58,7 +57,7 @@ function SigninForm() {
                 {...field}
               >
                 <TextField.Slot>
-                  <EnvelopeClosedIcon width="16" height="16" />
+                  <EnvelopeClosedIcon height="16" width="16" />
                 </TextField.Slot>
               </TextField.Root>
             );
@@ -72,6 +71,7 @@ function SigninForm() {
         )}
 
         <label htmlFor="password">Password</label>
+
         <Controller
           name="password"
           control={control}
@@ -89,7 +89,7 @@ function SigninForm() {
             return (
               <TextField.Root type="password" placeholder="*******" {...field}>
                 <TextField.Slot>
-                  <LockClosedIcon width="16" height="16" />
+                  <LockClosedIcon height="16" width="16" />
                 </TextField.Slot>
               </TextField.Root>
             );
@@ -103,11 +103,10 @@ function SigninForm() {
         )}
 
         <Button type="submit" mt="4">
-          Sign in
+          Sign In
         </Button>
       </Flex>
     </form>
   );
 }
-
 export default SigninForm;
