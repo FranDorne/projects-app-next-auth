@@ -1,11 +1,9 @@
-import prisma from "@/libs/prisma";
-import NextAuth from "next-auth/next";
+import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import prisma from "@/libs/prisma";
 import bcrypt from "bcrypt";
 
-
-const handler = NextAuth({
-
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -13,14 +11,11 @@ const handler = NextAuth({
         email: {
           label: "Email",
           type: "email",
-          placeholder: "email@domain.com",
+          placeholder: "user@something.com",
         },
-        password: {
-          label: "Password",
-          type: "password",
-        },
+        password: { label: "Password", type: "password" },
       },
-      async authorize(credentials: any , req) {
+      async authorize(credentials: any, req) {
         const { email, password } = credentials;
 
         const userFound = await prisma.user.findUnique({
@@ -29,24 +24,44 @@ const handler = NextAuth({
           },
         });
 
-        if (!userFound) throw new Error("Invalid credentials")
+        if (!userFound) throw new Error("Invalid credentials");
 
-        const validPassword =  await bcrypt.compare(password, userFound.password)
+        const validPassword = await bcrypt.compare(
+          password,
+          userFound.password
+        );
 
-        if (!validPassword) throw new Error("Invalid credentials")
-
+        if (!validPassword) throw new Error("Invalid credentials");
 
         return {
           id: userFound.id + "",
           name: userFound.name,
-          email: userFound.email
+          email: userFound.email,
         };
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user, account, profile }) {
+      if (user) {
+        token.id = user.id;
+      }
+
+      return token;
+    },
+    async session({ session, user, token }) {
+      if (token) {
+        session.user.id = token.sub as string;
+      }
+
+      return session;
+    },
+  },
   pages: {
     signIn: "/auth/login",
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

@@ -30,7 +30,7 @@ function SigninForm() {
       console.log(res);
     }
 
-    router.push("/dashboard");
+    router.push(`/dashboard`);
   });
 
   console.log(errors);
