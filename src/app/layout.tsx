@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Theme } from "@radix-ui/themes";
-import Navbar from "@/components/auth/Navbar";
+import Navbar from "@/components/Navbar";
 import "./globals.css";
 import "@radix-ui/themes/styles.css";
 import ContextProvider from "@/context/GlobalContext";
