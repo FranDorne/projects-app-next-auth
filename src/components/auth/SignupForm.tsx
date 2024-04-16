@@ -36,9 +36,10 @@ function SignInForm() {
 
       if (!result?.ok) {
         console.log(result?.error)
+        return;
       }
 
-      router.push(`/dashboard`)
+      router.push('/dashboard')
     }
   });
 

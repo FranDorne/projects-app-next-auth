@@ -26,11 +26,13 @@ function SigninForm() {
       password: data.password,
     });
 
+    console.log(res)
+
     if (!res?.ok) {
       console.log(res);
     }
 
-    router.push(`/dashboard`);
+    router.push("/dashboard");
   });
 
   console.log(errors);
